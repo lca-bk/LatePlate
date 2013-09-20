@@ -20,6 +20,7 @@ import cgi
 import urllib
 import webapp2
 import jinja2
+from datetime import datetime
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
@@ -30,10 +31,10 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 
 def chapter_key():
-	return ndb.key('LatePlate', "Alpha Tau")
+	return ndb.Key('LatePlate', "Alpha Tau")
 
 def lateplate_key():
-	return ndb.key('LatePlateRequest', 'LatePlates')
+	return ndb.Key('LatePlate', 'LatePlates')
 
 
 class Brother(ndb.Model):
@@ -41,19 +42,45 @@ class Brother(ndb.Model):
 	approved = ndb.BooleanProperty()
 	admin = ndb.BooleanProperty()
 
-class LatePlateRequest(ndb.Model):
+class LatePlate(ndb.Model):
 	user = ndb.UserProperty()
 	meal = ndb.StringProperty()
 	request_time = ndb.DateTimeProperty()
 
-class RecurringLatePlateRequest(LatePlateRequest):
+class RecurringLatePlate(LatePlate):
 	day_of_week = ndb.StringProperty()
 
-class OneoffLatePlateRequest(LatePlateRequest):
+class OneoffLatePlate(LatePlate):
 	date = ndb.DateProperty()
 
 
 class LatePlateHandler(webapp2.RequestHandler):
+	def get(self):
+		user = users.get_current_user()
+
+		oneoff_days_list = ["today", "tomorrow", "the next day"]
+
+		if user == None:
+			self.redirect(users.create_login_url(self.request.uri))
+			return
+
+		oneoff_list = []
+
+		template_values = {
+			'oneoff_days_list': oneoff_days_list,
+			'user': user,
+			'oneoff_list': oneoff_list
+		}
+		template = JINJA_ENVIRONMENT.get_template('user.html')
+		self.response.write(template.render(template_values))
+
+
+	def post(self):
+		user = users.get_current_user()
+
+		if user == None:
+			self.redirect(users.create_login_url(self.request.uri))
+			return
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -61,6 +88,25 @@ class MainHandler(webapp2.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
 
+		day = datetime.now()
+		ancestor_key = chapter_key()
+
+
+
+		n = OneoffLatePlate(parent=ancestor_key, date=datetime.now(), meal="lunch")
+		n.put()
+
+
+		oneoff_plates = OneoffLatePlate.query(ancestor=ancestor_key)
+
+		lunch_plates = oneoff_plates.filter(OneoffLatePlate.meal == "lunch")
+		dinner_plates = oneoff_plates.filter(OneoffLatePlate.meal == "dinner")
+
+
+		template_values = {
+			'lunch_plates': lunch_plates,
+			'dinner_plates': dinner_plates
+		}
 		template = JINJA_ENVIRONMENT.get_template('index.html')
 		self.response.write(template.render(template_values))
 

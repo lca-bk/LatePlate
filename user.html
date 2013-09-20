@@ -1,16 +1,77 @@
 {% autoescape true %}
 <html>
-	<body>
-		<h1>My late plates:</h1>
+	<head>
+		<link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+	</head>
 
+	<body>
+		<h1>{{user.nickname()}}'s late plates:</h1>
+
+		<div id="recurring">
+			<form>
+				<h2>Recurring</h2>
+				<table>
+
+				<tr></tr>
+				<th></th>
+				{% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+					<th>{{ day }}</th>
+				{% endfor %}
+
+				{% for meal in ["Lunch", "Dinner"] %}
+					<tr>
+					<td>{{ meal }}</td>
+
+					{% for i in range(5) %}
+							<td><input type="checkbox"></td>
+					{% endfor %}
+					</tr>
+				{% endfor %}
+				</table>
+
+				<input type="submit" value="Save" />
+			</form>
+		</div>
+
+
+		<div id="oneoff_listing">
+			<h2>My Requests</h2>
+			<table>
+			{% for oneoff in oneoff_listing %}
+				<tr>
+				<td>{{oneoff.meal}}</td>
+				<td>{{oneoff.date}}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+
+
+		<hr/>
 
 
 		<form>
+			<h2>Request a plate</h2>
+
+			<select name="day">
+			{% for day in oneoff_days_list %}
+				<option>{{day}}</option>
+			{% endfor %}
+			</select>
+
 			<input type="radio" name="meal" value="lunch">Lunch</input>
 			<input type="radio" name="meal" value="dinner">Dinner</input>
-			<input type="submit" value="Save me some food" />
+
+			<input type="submit" value="Save me some food!" />
 		</form>
 
+
+		<hr/>
+
+
+		<div id='footer'>
+			<h3>AEKDB</h3>
+		</div>
 	</body>
 </html>
 {% endautoescape %}
