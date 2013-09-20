@@ -23,7 +23,7 @@
 					<td>{{ meal }}</td>
 
 					{% for day in available_days %}
-							<td><input type="checkbox" name={{ day + ":" + meal }}></td>
+							<td><input type="checkbox" name="{{ meal }}[]"></td>
 					{% endfor %}
 					</tr>
 				{% endfor %}

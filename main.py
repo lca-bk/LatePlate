@@ -39,6 +39,8 @@ def available_days():
 
 
 class LatePlate(ndb.Model):
+	Meals = ["Lunch", "Linner"]
+	
 	user = ndb.UserProperty()
 	meal = ndb.StringProperty()	#	"lunch" or "dinner"
 
@@ -76,6 +78,9 @@ class MyPlatesHandler(webapp2.RequestHandler):
 
 
 class ScheduleHandler(webapp2.RequestHandler):
+	
+
+
 	def post(self):
 		user = users.get_current_user()
 		if user == None:
@@ -83,13 +88,22 @@ class ScheduleHandler(webapp2.RequestHandler):
 			return
 
 		#	trash all the old recurring plates
-		prev_recurr = RecurringLatePlate.query(ancestor_key=chapter_key()).filter(LatePlate.user == user)
+		prev_recurr = RecurringLatePlate.query(ancestor=chapter_key()).filter(LatePlate.user == user)
 		for old_plate in prev_recurr:
 			old_plate.delete()
 
 
+		try:
+			# FIXME: set new recurring
+			for meal in LatePlate.Meals:
+				for weekday in range(4):	#	exclude weekends
+					if self.request.get(meal, allow_multiple=True)[weekday] == True:
+						newPlate = RecurringLatePlate(parent=chapter_key(), meal=meal, weekday=weekday, user=user)
+		except:
+			self.response.write(500)
+			return
 
-		# FIXME: set new recurring
+		self.redirect("/me")
 
 
 class OneoffRequestHandler(webapp2.RequestHandler):
