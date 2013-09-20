@@ -1,0 +1,25 @@
+{% autoescape true %}
+<html>
+	<body>
+		<h1>Today's Late Plates:</h1>
+
+		<h2>Lunch</h2>
+		<table>
+
+			{% for plate in lunch_plates %}
+				<tr>
+					<td>{ plate.user }</td>
+				</tr>
+			{% endfor %}
+
+		</table>
+
+
+		<!-- <h2>Dinner</h2>
+		<table>
+
+		</table> -->
+
+	</body>
+</html>
+{% endautoescape %}
