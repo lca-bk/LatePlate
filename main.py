@@ -20,7 +20,7 @@ import cgi
 import urllib
 import webapp2
 import jinja2
-from datetime import datetime
+import datetime
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
@@ -33,54 +33,88 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 def chapter_key():
 	return ndb.Key('LatePlate', "Alpha Tau")
 
-def lateplate_key():
-	return ndb.Key('LatePlate', 'LatePlates')
 
+def available_days():
+	return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
-class Brother(ndb.Model):
-	user = ndb.UserProperty()
-	approved = ndb.BooleanProperty()
-	admin = ndb.BooleanProperty()
 
 class LatePlate(ndb.Model):
 	user = ndb.UserProperty()
-	meal = ndb.StringProperty()
-	request_time = ndb.DateTimeProperty()
+	meal = ndb.StringProperty()	#	"lunch" or "dinner"
 
 class RecurringLatePlate(LatePlate):
-	day_of_week = ndb.StringProperty()
+	weekday = ndb.IntegerProperty()	#	0 = Monday, 6 = Sunday, etc
 
 class OneoffLatePlate(LatePlate):
 	date = ndb.DateProperty()
 
 
-class LatePlateHandler(webapp2.RequestHandler):
+class MyPlatesHandler(webapp2.RequestHandler):
 	def get(self):
+		#	Require user to sign in
 		user = users.get_current_user()
-
-		oneoff_days_list = ["today", "tomorrow", "the next day"]
-
 		if user == None:
 			self.redirect(users.create_login_url(self.request.uri))
 			return
 
-		oneoff_list = []
+		#	Populate the list of days available for oneoff request
+		available_oneoff_days = []
+		day = datetime.date.today()
+		while len(available_oneoff_days) < 3:
+			if day.weekday() < 5:
+				available_oneoff_days.append(day)
+			day += datetime.timedelta(days=1)
+
 
 		template_values = {
-			'oneoff_days_list': oneoff_days_list,
+			'available_oneoff_days': available_oneoff_days,
 			'user': user,
-			'oneoff_list': oneoff_list
+			'available_days': available_days()
 		}
 		template = JINJA_ENVIRONMENT.get_template('user.html')
 		self.response.write(template.render(template_values))
 
 
+class ScheduleHandler(webapp2.RequestHandler):
 	def post(self):
 		user = users.get_current_user()
-
 		if user == None:
 			self.redirect(users.create_login_url(self.request.uri))
 			return
+
+		#	trash all the old recurring plates
+		prev_recurr = RecurringLatePlate.query(ancestor_key=chapter_key()).filter(LatePlate.user == user)
+		for old_plate in prev_recurr:
+			old_plate.delete()
+
+
+
+		# FIXME: set new recurring
+
+
+class OneoffRequestHandler(webapp2.RequestHandler):
+	def post(self):
+		user = users.get_current_user()
+		if user == None:
+			self.redirect(users.create_login_url(self.request.uri))
+			return
+
+		date = self.request.get('date')
+		date = datetime.datetime.strptime(date, '%m/%d/%Y').date()
+
+		meal = self.request.get('meal')
+		# self.response.write("meal: " + meal)
+		# return webapp2.Response("meal: " + meal)
+
+		if meal != "lunch" and meal != "dinner":
+			self.redirect(500)
+			return
+
+		#	Create and save the late plate
+		plate = OneoffLatePlate(parent=chapter_key(), meal=meal, user=user, date=date)
+		plate.put()
+
+		self.redirect("/me")
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -88,17 +122,17 @@ class MainHandler(webapp2.RequestHandler):
 	def get(self):
 		user = users.get_current_user()
 
-		day = datetime.now()
+
+		date = datetime.date.today()
 		ancestor_key = chapter_key()
 
 
-
-		n = OneoffLatePlate(parent=ancestor_key, date=datetime.now(), meal="lunch")
-		n.put()
+		# make a dummy lateplate
+		# n = OneoffLatePlate(parent=ancestor_key, date=datetime.now(), meal="lunch")
+		# n.put()
 
 
 		oneoff_plates = OneoffLatePlate.query(ancestor=ancestor_key)
-
 		lunch_plates = oneoff_plates.filter(OneoffLatePlate.meal == "lunch")
 		dinner_plates = oneoff_plates.filter(OneoffLatePlate.meal == "dinner")
 
@@ -114,7 +148,7 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
-	('/request', LatePlateHandler),
-	('/list', LatePlateHandler),
-	('/me', LatePlateHandler)
+	('/me', MyPlatesHandler),
+	('/schedule', ScheduleHandler),
+	('/request', OneoffRequestHandler)
 ], debug=True)

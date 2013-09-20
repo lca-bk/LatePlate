@@ -8,13 +8,13 @@
 		<h1>{{user.nickname()}}'s late plates:</h1>
 
 		<div id="recurring">
-			<form>
+			<form action="/schedule" method="post">
 				<h2>Recurring</h2>
 				<table>
 
 				<tr></tr>
 				<th></th>
-				{% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+				{% for day in available_days %}
 					<th>{{ day }}</th>
 				{% endfor %}
 
@@ -22,14 +22,15 @@
 					<tr>
 					<td>{{ meal }}</td>
 
-					{% for i in range(5) %}
-							<td><input type="checkbox"></td>
+					{% for day in available_days %}
+							<td><input type="checkbox" name={{ day + ":" + meal }}></td>
 					{% endfor %}
 					</tr>
 				{% endfor %}
 				</table>
 
 				<input type="submit" value="Save" />
+				<input hidden=true name="type" value="recurring" />
 			</form>
 		</div>
 
@@ -50,12 +51,12 @@
 		<hr/>
 
 
-		<form>
+		<form action="/request" method="post">
 			<h2>Request a plate</h2>
 
-			<select name="day">
-			{% for day in oneoff_days_list %}
-				<option>{{day}}</option>
+			<select name="date">
+			{% for day in available_oneoff_days %}
+				<option value="{{day.strftime('%m/%d/%Y')}}">{{day.strftime('%A %m/%d')}}</option>
 			{% endfor %}
 			</select>
 
@@ -63,10 +64,14 @@
 			<input type="radio" name="meal" value="dinner">Dinner</input>
 
 			<input type="submit" value="Save me some food!" />
+			<input hidden=true name="type" value="oneoff" />
 		</form>
 
 
 		<hr/>
+
+
+		<a href="/">View all lateplates</a>
 
 
 		<div id='footer'>
