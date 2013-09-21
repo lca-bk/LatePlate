@@ -18,6 +18,7 @@
 import os
 import cgi
 import urllib
+import sys
 import webapp2
 import jinja2
 import datetime
@@ -35,12 +36,13 @@ def chapter_key():
 
 
 class LatePlate(ndb.Model):
-	Meals = ["Lunch", "Linner"]
-	Weekdays = range(4)
+	Meals = ["Lunch", "Dinner"]
+	Weekdays = range(5)
 	WeekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 	
 	user = ndb.UserProperty()
 	meal = ndb.StringProperty()	#	"lunch" or "dinner"
+
 
 class RecurringLatePlate(LatePlate):
 	weekday = ndb.IntegerProperty()	#	0 = Monday, 6 = Sunday, etc
@@ -52,12 +54,13 @@ class OneoffLatePlate(LatePlate):
 class MyPlatesHandler(webapp2.RequestHandler):
 	def user_schedule(self, user):
 		schedule = {}
-
 		for meal in LatePlate.Meals:
 			schedule[meal] = []
-			for weekday in range(4):
+			for weekday in range(5):
 				plate = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday, LatePlate.user==user, LatePlate.meal==meal)
-				schedule[meal].append(plate is not None)
+				schedule[meal].append(plate.count() > 0)
+				# sys.stderr.write(str(plate))
+				# sys.stderr.write("count = " + str(plate.count()))
 
 		return schedule
 
@@ -77,8 +80,11 @@ class MyPlatesHandler(webapp2.RequestHandler):
 				available_oneoff_days.append(day)
 			day += datetime.timedelta(days=1)
 
+		sys.stderr.write(str(self.user_schedule(user)))
 
+		#	FIXME: rm
 		p = RecurringLatePlate(parent=chapter_key(), weekday=1, meal="Lunch", user=user)
+		p.put()
 
 		template_values = {
 			'available_oneoff_days': available_oneoff_days,
@@ -92,10 +98,9 @@ class MyPlatesHandler(webapp2.RequestHandler):
 
 
 class ScheduleHandler(webapp2.RequestHandler):
-	
-
 
 	def post(self):
+		#	Require login
 		user = users.get_current_user()
 		if user == None:
 			self.redirect(users.create_login_url(self.request.uri))
@@ -104,18 +109,25 @@ class ScheduleHandler(webapp2.RequestHandler):
 		#	trash all the old recurring plates
 		prev_recurr = RecurringLatePlate.query(ancestor=chapter_key()).filter(LatePlate.user == user)
 		for old_plate in prev_recurr:
-			old_plate.delete()
+			old_plate.key.delete()
 
-
+		#	Add all the new scheduled plates
 		try:
-			# FIXME: set new recurring
 			for meal in LatePlate.Meals:
-				for weekday in range(4):	#	exclude weekends
-					if self.request.get(meal, allow_multiple=True)[weekday] == True:
-						newPlate = RecurringLatePlate(parent=chapter_key(), meal=meal, weekday=weekday, user=user)
+				for weekday in LatePlate.Weekdays:
+					argKey = meal + "[" + str(weekday) + "]"
+					if argKey in self.request.POST:
+						val = self.request.POST[argKey] == "on"
+
+						if val == True:
+							p = RecurringLatePlate(parent=chapter_key(), user=user, meal=meal, weekday=weekday)
+							p.put()
+							sys.stderr.write("Scheduled " + meal + LatePlate.WeekdayNames[weekday] + "\n")
+
 		except:
 			self.response.write(500)
 			return
+
 
 		self.redirect("/me")
 
