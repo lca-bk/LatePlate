@@ -82,10 +82,6 @@ class MyPlatesHandler(webapp2.RequestHandler):
 
 		sys.stderr.write(str(self.user_schedule(user)))
 
-		#	FIXME: rm
-		p = RecurringLatePlate(parent=chapter_key(), weekday=1, meal="Lunch", user=user)
-		p.put()
-
 		template_values = {
 			'available_oneoff_days': available_oneoff_days,
 			'user': user,
@@ -172,14 +168,21 @@ class MainHandler(webapp2.RequestHandler):
 		# n.put()
 
 
+		weekday = date.weekday()
+
+		recurring_plates = RecurringLatePlate.query(ancestor=ancestor_key).filter(RecurringLatePlate.weekday==weekday, LatePlate.user==user)
+		recurring_lunches = recurring_plates.filter(LatePlate.meal=="Lunch")
+		recurring_dinners = recurring_plates.filter(LatePlate.meal=="Dinner")
+
 		oneoff_plates = OneoffLatePlate.query(ancestor=ancestor_key)
-		lunch_plates = oneoff_plates.filter(OneoffLatePlate.meal == "lunch")
-		dinner_plates = oneoff_plates.filter(OneoffLatePlate.meal == "dinner")
+		oneoff_lunches = oneoff_plates.filter(OneoffLatePlate.meal == "lunch")
+		oneoff_dinners = oneoff_plates.filter(OneoffLatePlate.meal == "dinner")
 
 
 		template_values = {
-			'lunch_plates': lunch_plates,
-			'dinner_plates': dinner_plates
+			'lunch_plates': [l for l in oneoff_lunches] + [l for l in recurring_lunches],
+			'dinner_plates': [d for d in oneoff_dinners] + [d for d in recurring_dinners],
+			'day_desc': date.strftime("%m/%d/%Y")
 		}
 		template = JINJA_ENVIRONMENT.get_template('index.html')
 		self.response.write(template.render(template_values))
