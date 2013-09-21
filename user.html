@@ -7,32 +7,7 @@
 	<body>
 		<h1>{{user.nickname()}}'s late plates:</h1>
 
-		<div id="recurring">
-			<form action="/schedule" method="post">
-				<h2>Recurring</h2>
-				<table>
-
-				<tr></tr>
-				<th></th>
-				{% for day in available_days %}
-					<th>{{ day }}</th>
-				{% endfor %}
-
-				{% for meal in ["Lunch", "Dinner"] %}
-					<tr>
-					<td>{{ meal }}</td>
-
-					{% for day in available_days %}
-							<td><input type="checkbox" name="{{ meal }}[]"></td>
-					{% endfor %}
-					</tr>
-				{% endfor %}
-				</table>
-
-				<input type="submit" value="Save" />
-				<input hidden=true name="type" value="recurring" />
-			</form>
-		</div>
+		
 
 
 		<div id="oneoff_listing">
@@ -66,6 +41,34 @@
 			<input type="submit" value="Save me some food!" />
 			<input hidden=true name="type" value="oneoff" />
 		</form>
+
+
+		<div id="recurring">
+			<form action="/schedule" method="post">
+				<h2>Recurring</h2>
+				<table>
+
+				<tr></tr>
+				<th></th>
+				{% for day in available_days %}
+					<th>{{ day }}</th>
+				{% endfor %}
+
+				{% for meal in meals %}
+					<tr>
+					<td>{{ meal }}</td>
+
+					{% for day in available_days %}
+							<td><input type="checkbox" name="{{ meal }}[]" value={{ recurring_plates[meal][day] }}></td>
+					{% endfor %}
+					</tr>
+				{% endfor %}
+				</table>
+
+				<input type="submit" value="Save" />
+				<input hidden=true name="type" value="recurring" />
+			</form>
+		</div>
 
 
 		<hr/>

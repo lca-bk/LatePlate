@@ -34,12 +34,10 @@ def chapter_key():
 	return ndb.Key('LatePlate', "Alpha Tau")
 
 
-def available_days():
-	return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-
-
 class LatePlate(ndb.Model):
 	Meals = ["Lunch", "Linner"]
+	Weekdays = range(4)
+	WeekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 	
 	user = ndb.UserProperty()
 	meal = ndb.StringProperty()	#	"lunch" or "dinner"
@@ -52,6 +50,18 @@ class OneoffLatePlate(LatePlate):
 
 
 class MyPlatesHandler(webapp2.RequestHandler):
+	def user_schedule(self, user):
+		schedule = {}
+
+		for meal in LatePlate.Meals:
+			schedule[meal] = []
+			for weekday in range(4):
+				plate = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday, LatePlate.user==user, LatePlate.meal==meal)
+				schedule[meal].append(plate is not None)
+
+		return schedule
+
+
 	def get(self):
 		#	Require user to sign in
 		user = users.get_current_user()
@@ -68,10 +78,14 @@ class MyPlatesHandler(webapp2.RequestHandler):
 			day += datetime.timedelta(days=1)
 
 
+		p = RecurringLatePlate(parent=chapter_key(), weekday=1, meal="Lunch", user=user)
+
 		template_values = {
 			'available_oneoff_days': available_oneoff_days,
 			'user': user,
-			'available_days': available_days()
+			'available_days': LatePlate.WeekdayNames,
+			'meals': LatePlate.Meals,
+			'recurring_plates': self.user_schedule(user)
 		}
 		template = JINJA_ENVIRONMENT.get_template('user.html')
 		self.response.write(template.render(template_values))
