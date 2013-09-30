@@ -2,13 +2,23 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,800&subset=latin,greek' rel='stylesheet' type='text/css'>
 	</head>
-	  
-	<body>
-		<a href="me">My Lateplates</a>
+	 
+	<nav>
+		<ul>
+			<li><a href="/"><span>Home</span></a></li>
+			<li><a href="/me"><span>My Lateplates</span></a></li>
+			<li><a href="#"><span>Contact</span></a></li>
+		</ul>
+	</nav>
 
-		<h1>Today's Late Plates:</h1>
-		<h2>( {{ day_desc }} )</h2>
+	</br>
+
+	<body>
+
+		<h1>Today's Late Plates</h1>
+		<h3> {{ day_desc }} </h3>
 
 		<h2>Lunch</h2>
 		<table>
@@ -20,7 +30,7 @@
 		</table>
 
 
-		<hr/>
+		</br>
 
 
 		<h2>Dinner</h2>
