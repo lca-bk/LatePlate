@@ -10,21 +10,20 @@ check back if speed is an issue */
 /*----menu buttons-----*/
 
 /* removing default list styles */
-nav ul
-{
+nav ul {
     padding: 0;
     margin: 0;
-    list-style: none;   
+    list-style: none;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-nav li
-{
+nav li {
     float: left;
 }
 
 /* style the anchor */
-nav a
-{
+nav a {
     float: left;
     color: #eee;
     margin: 0 5px;
@@ -48,8 +47,7 @@ nav a
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 0 rgba(0, 0, 0, 0.7), 0 2px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.5) inset; 
 }
 
-nav a:hover
-{
+nav a:hover {
     background-color: #bb413b;
     background-image: -moz-linear-gradient(#831608, #bb413b);
     background-image: -webkit-gradient(linear, left top, left bottom, from(#831608), to(#bb413b));      
@@ -59,8 +57,7 @@ nav a:hover
     background-image: linear-gradient(#831608, #bb413b);
 }
 
-nav a:active
-{
+nav a:active {
     background: #d4463c;
     position: relative;
     top: 2px;    
@@ -70,8 +67,7 @@ nav a:active
 }
 
 /* sytle the span element bb413b */
-nav span
-{
+nav span {
     /* border: 1px dashed #eba1a3; */
     display: inline-block;
     padding: 4px 15px;
@@ -85,8 +81,7 @@ nav span
     background-image: linear-gradient(#d4463c, #aa2618);
 }
 
-nav a:hover span
-{   
+nav a:hover span {
     background-color: #bb413b;
     background-image: -moz-linear-gradient(#aa2618, #d4463c);
     background-image: -webkit-gradient(linear, left top, left bottom, from(#aa2618), to(#d4463c));      
@@ -101,7 +96,9 @@ nav a:hover span
 
 /* ------CONTENT STYLES ------*/
 body {
-	background-color: green;
+	/*background-color: rgb(74, 13, 13);
+    color: white;*/
+    background-color: green;
 }
 
 h1 { 
@@ -133,7 +130,20 @@ a {
 
 /*---------------------------------------------------------------*/
 
+
+input[type='radio'] {
+    display: inline-block;
+}
+
+body {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 /* ------FOOTER STYLES-------*/
 
-/*nothing to put here yet*/
+#footer {
+    text-align: center;
+}
 
