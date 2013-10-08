@@ -39,7 +39,7 @@ class LatePlate(ndb.Model):
 	Meals = ["Lunch", "Dinner"]
 	Weekdays = range(5)
 	WeekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-	
+
 	user = ndb.UserProperty()
 	meal = ndb.StringProperty()	#	"lunch" or "dinner"
 
@@ -65,6 +65,10 @@ class MyPlatesHandler(webapp2.RequestHandler):
 		return schedule
 
 
+	def user_oneoff_listing(self, user):
+		plates = OneoffLatePlate.query(ancestor=chapter_key()).filter(LatePlate.user==user)	#FIXME: only show non-expired late plates
+		return plates
+
 	def get(self):
 		#	Require user to sign in
 		user = users.get_current_user()
@@ -87,7 +91,8 @@ class MyPlatesHandler(webapp2.RequestHandler):
 			'user': user,
 			'available_days': LatePlate.WeekdayNames,
 			'meals': LatePlate.Meals,
-			'recurring_plates': self.user_schedule(user)
+			'recurring_plates': self.user_schedule(user),
+			'oneoff_listing': self.user_oneoff_listing(user)
 		}
 		template = JINJA_ENVIRONMENT.get_template('user.html')
 		self.response.write(template.render(template_values))
@@ -121,20 +126,15 @@ class ScheduleHandler(webapp2.RequestHandler):
 							sys.stderr.write("Scheduled " + meal + LatePlate.WeekdayNames[weekday] + "\n")
 
 		except:
-			self.response.write(500)
+			self.error(500)
 			return
-
 
 		self.redirect("/me")
 
 
 class OneoffRequestHandler(webapp2.RequestHandler):
-	def post(self):
-		user = users.get_current_user()
-		if user == None:
-			self.redirect(users.create_login_url(self.request.uri))
-			return
-
+	
+	def request_plate(self, user):
 		date = self.request.get('date')
 		date = datetime.datetime.strptime(date, '%m/%d/%Y').date()
 
@@ -142,13 +142,40 @@ class OneoffRequestHandler(webapp2.RequestHandler):
 		# self.response.write("meal: " + meal)
 		# return webapp2.Response("meal: " + meal)
 
-		if meal != "lunch" and meal != "dinner":
-			self.redirect(500)
+		if meal not in LatePlate.Meals:
+			self.response.write("Invalid meal" + meal)
 			return
 
 		#	Create and save the late plate
 		plate = OneoffLatePlate(parent=chapter_key(), meal=meal, user=user, date=date)
 		plate.put()
+
+		self.redirect("/me")
+
+
+	def post(self):
+		user = users.get_current_user()
+		if user == None:
+			self.redirect(users.create_login_url(self.request.uri))
+			return
+
+		action = self.request.get('action')
+		if action == "delete":
+			self.delete_plate(user)
+		elif action == "create":
+			self.request_plate(user)
+		else:
+			self.error(404)
+
+	def delete_plate(self, user):
+		plate_id = int(self.request.get('plate_id'))
+		plate = OneoffLatePlate.get_by_id(id=plate_id, parent=chapter_key())
+
+		if plate == None:
+			self.error(404)
+			return
+
+		plate.key.delete()
 
 		self.redirect("/me")
 
@@ -160,23 +187,16 @@ class MainHandler(webapp2.RequestHandler):
 
 
 		date = datetime.date.today()
-		ancestor_key = chapter_key()
-
-
-		# make a dummy lateplate
-		# n = OneoffLatePlate(parent=ancestor_key, date=datetime.now(), meal="lunch")
-		# n.put()
-
 
 		weekday = date.weekday()
 
-		recurring_plates = RecurringLatePlate.query(ancestor=ancestor_key).filter(RecurringLatePlate.weekday==weekday, LatePlate.user==user)
+		recurring_plates = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday, LatePlate.user==user)
 		recurring_lunches = recurring_plates.filter(LatePlate.meal=="Lunch")
 		recurring_dinners = recurring_plates.filter(LatePlate.meal=="Dinner")
 
-		oneoff_plates = OneoffLatePlate.query(ancestor=ancestor_key)
-		oneoff_lunches = oneoff_plates.filter(OneoffLatePlate.meal == "lunch")
-		oneoff_dinners = oneoff_plates.filter(OneoffLatePlate.meal == "dinner")
+		oneoff_plates = OneoffLatePlate.query(ancestor=chapter_key())
+		oneoff_lunches = oneoff_plates.filter(OneoffLatePlate.meal == "Lunch")
+		oneoff_dinners = oneoff_plates.filter(OneoffLatePlate.meal == "Dinner")
 
 
 		template_values = {
@@ -186,7 +206,6 @@ class MainHandler(webapp2.RequestHandler):
 		}
 		template = JINJA_ENVIRONMENT.get_template('index.html')
 		self.response.write(template.render(template_values))
-
 
 
 app = webapp2.WSGIApplication([

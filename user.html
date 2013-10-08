@@ -23,8 +23,15 @@
 			<table>
 			{% for oneoff in oneoff_listing %}
 				<tr>
-					<td>{{oneoff.meal}}</td>
-					<td>{{oneoff.date}}</td>
+					<form action="/request" method="POST">
+						<td>{{oneoff.meal}}</td>
+						<td>{{oneoff.date}}</td>
+						<td>
+							<input type="submit" value="Delete" />
+						</td>
+						<input type="hidden" name="action" value="delete" />
+						<input type="hidden" name="plate_id" value={{oneoff.key.id()}} />
+					</form>
 				</tr>
 			{% endfor %}
 			</table>
@@ -45,13 +52,14 @@
 
 			</br>
 
-			<input type="radio" name="meal" value="lunch">Lunch</input>
-			<input type="radio" name="meal" value="dinner">Dinner</input>
+			<input type="radio" name="meal" value="Lunch">Lunch</input>
+			<input type="radio" name="meal" value="Dinner">Dinner</input>
 
 			</br>
-			
+
 			<input type="submit" value="Save me some food!" />
 			<input hidden=true name="type" value="oneoff" />
+			<input type="hidden" name="action" value="create" />
 		</form>
 
 
@@ -85,9 +93,6 @@
 
 
 		<hr/>
-
-
-		<a href="/">View all lateplates</a>
 
 
 		<div id='footer'>
