@@ -2,21 +2,29 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,800&subset=latin,greek' rel='stylesheet' type='text/css'>
 	</head>
+
+	<nav>
+		<ul>
+			<li><a href="/"><span>Home</span></a></li>
+			<li><a href="/me"><span>My Lateplates</span></a></li>
+			<li><a href="#"><span>Contact</span></a></li>
+		</ul>
+	</nav>
+
+	</br>
 
 	<body>
 		<h1>{{user.nickname()}}'s late plates:</h1>
-
-		
-
 
 		<div id="oneoff_listing">
 			<h2>My Requests</h2>
 			<table>
 			{% for oneoff in oneoff_listing %}
 				<tr>
-				<td>{{oneoff.meal}}</td>
-				<td>{{oneoff.date}}</td>
+					<td>{{oneoff.meal}}</td>
+					<td>{{oneoff.date}}</td>
 				</tr>
 			{% endfor %}
 			</table>
@@ -35,9 +43,13 @@
 			{% endfor %}
 			</select>
 
+			</br>
+
 			<input type="radio" name="meal" value="lunch">Lunch</input>
 			<input type="radio" name="meal" value="dinner">Dinner</input>
 
+			</br>
+			
 			<input type="submit" value="Save me some food!" />
 			<input hidden=true name="type" value="oneoff" />
 		</form>
@@ -46,6 +58,7 @@
 		<div id="recurring">
 			<form action="/schedule" method="post">
 				<h2>Recurring</h2>
+
 				<table>
 
 				<tr></tr>
@@ -78,7 +91,7 @@
 
 
 		<div id='footer'>
-			<h3>AEKDB</h3>
+			<h3>AEK&Delta;B</h3>
 		</div>
 	</body>
 </html>
