@@ -11,7 +11,14 @@
 
 		</br>
 
-		<h1>{{user.nickname()}}'s late plates:</h1>
+		<h1>{{member.name}}'s late plates:</h1>
+
+
+		<form action='/member' method="post">
+			<input type="text" name="name" value="{{member.name}}" />
+			<input type="submit" value="Change" />
+		</form>
+
 
 		<div id="oneoff_listing">
 			<h2>My Requests</h2>
@@ -36,27 +43,29 @@
 		<hr/>
 
 
-		<form action="/request" method="post">
-			<h2>Request a plate</h2>
+		<div id="new_request">
+			<form action="/request" method="post">
+				<h2>Request a plate</h2>
 
-			<select name="date">
-			{% for day in available_oneoff_days %}
-				<option value="{{day.strftime('%m/%d/%Y')}}">{{day.strftime('%A %m/%d')}}</option>
-			{% endfor %}
-			</select>
+				<select name="date">
+				{% for day in available_oneoff_days %}
+					<option value="{{day.strftime('%m/%d/%Y')}}">{{day.strftime('%A %m/%d')}}</option>
+				{% endfor %}
+				</select>
 
-			</br>
+				</br>
 
-			<input type="radio" name="meal" value="Lunch">Lunch</input>
-			<br/>
-			<input type="radio" name="meal" value="Dinner">Dinner</input>
+				<input type="radio" name="meal" value="Lunch">Lunch</input>
+				<br/>
+				<input type="radio" name="meal" value="Dinner">Dinner</input>
 
-			</br>
+				</br>
 
-			<input type="submit" value="Request" />
-			<input hidden=true name="type" value="oneoff" />
-			<input type="hidden" name="action" value="create" />
-		</form>
+				<input type="submit" value="Request" />
+				<input hidden=true name="type" value="oneoff" />
+				<input type="hidden" name="action" value="create" />
+			</form>
+		</div>
 
 
 		<div id="recurring">
