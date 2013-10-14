@@ -197,6 +197,11 @@ class OneoffRequestHandler(MyWebHandler):
 			self.response.write("Invalid meal: '" + meal +"'")
 			return
 
+		# prevent duplicate oneoff requests
+		if OneoffLatePlate.query(ancestor=member.key).filter(LatePlate.meal==meal, OneoffLatePlate.date==date).count() > 0:
+			self.response.write("Duplicate")
+			return
+
 		#	Create and save the late plate
 		plate = OneoffLatePlate(parent=member.key, meal=meal, member=member.key, date=date)
 		plate.put()
