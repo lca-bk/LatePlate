@@ -192,11 +192,9 @@ class OneoffRequestHandler(MyWebHandler):
 		date = datetime.datetime.strptime(date, '%m/%d/%Y').date()
 
 		meal = self.request.get('meal')
-		# self.response.write("meal: " + meal)
-		# return webapp2.Response("meal: " + meal)
 
 		if meal not in LatePlate.Meals:
-			self.response.write("Invalid meal" + meal)
+			self.response.write("Invalid meal: '" + meal +"'")
 			return
 
 		#	Create and save the late plate
@@ -239,23 +237,21 @@ class MainHandler(MyWebHandler):
 		member = Member.from_user(user)
 
 		date = datetime.date.today()
-
 		weekday = date.weekday()
 
-		recurring_plates_query = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday)
-		recurring_lunches = recurring_plates_query.filter(LatePlate.meal=="Lunch")
-		recurring_dinners = recurring_plates_query.filter(LatePlate.meal=="Dinner")
+		plates = {}
 
+		recurring_plates_query = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday)
 		oneoff_plates_query = OneoffLatePlate.query(ancestor=chapter_key())
-		oneoff_lunches = oneoff_plates_query.filter(OneoffLatePlate.meal == "Lunch")
-		oneoff_dinners = oneoff_plates_query.filter(OneoffLatePlate.meal == "Dinner")
+
+		for meal in LatePlate.Meals:
+			oneoffs = oneoff_plates_query.filter(LatePlate.meal==meal)
+			recurrings = recurring_plates_query.filter(LatePlate.meal==meal)
+			plates[meal] = [l for l in oneoffs] + [l for l in recurrings]
 
 		template_values = {
-			'lunch_plates': [l for l in oneoff_lunches] + [l for l in recurring_lunches],
-			'dinner_plates': [d for d in oneoff_dinners] + [d for d in recurring_dinners],
+			'plates': plates,
 			'date': date
-			# 'date_list': date_list,
-			# 'date_list_index': dlIdx
 		}
 		template = JINJA_ENVIRONMENT.get_template('index.html')
 		self.response.write(template.render(template_values))

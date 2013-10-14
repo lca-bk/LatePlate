@@ -27,7 +27,7 @@
 				<tr>
 					<form action="/request" method="POST">
 						<td>{{oneoff.meal}}</td>
-						<td>{{oneoff.date}}</td>
+						<td>{{oneoff.date.strftime('%A %m/%d') }}</td>
 						<td>
 							<input type="submit" value="Delete" />
 						</td>
