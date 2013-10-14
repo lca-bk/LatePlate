@@ -9,9 +9,7 @@
 	<body>
 		{% include 'header.html' %}
 
-		<br/>
-		<br/>
-		<hr/>
+		<div class="hr"></div>
 
 
 		<h1>Today's Late Plates</h1>
@@ -28,11 +26,13 @@
 				</tr>
 			{% endfor %}
 			</table>
-			<hr/>
+			
+			<div class="hr"></div>
+
 		{% endfor %}
 
-
 		{% include 'footer.html' %}
+
 	</body>
 </html>
 {% endautoescape %}

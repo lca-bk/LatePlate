@@ -4,6 +4,14 @@ check back if speed is an issue */
 	font-family: 'Open Sans', sans-serif;
 }
 
+.hr{
+    width: 50%; 
+    height: 1px; 
+    background: gray; 
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /*------HEADER STYLES------*/
 
@@ -12,16 +20,20 @@ check back if speed is an issue */
 /* removing default list styles */
 nav ul {
     padding: 0;
-    margin: 0;
+    margin: 20 0px;
     list-style: none;
     margin-left: auto;
     margin-right: auto;
+    display: block;
+    text-align: center;
 }
 
 nav li {
     margin-left: auto;
     margin-right: auto;
+    display: inline-block;
 }
+
 
 /* style the anchor */
 nav a {
@@ -98,10 +110,11 @@ nav span {
 
 /* ------CONTENT STYLES ------*/
 body {
-	/*background-color: rgb(74, 13, 13);
-    color: white;*/
-    /*background-color: #27ae60;*/
-    background-color: #318F32
+	/*
+    background-color: #27ae60;
+    background-color: #318F32 */
+    background-image: url('../images/wood.jpg');
+    text-align: center;
 }
 
 h1 { 
@@ -114,6 +127,16 @@ h2 {
 
 h3 { 
 	font-weight: 300; 
+}
+
+p {
+    font-weight: 300;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
 }
 
 td {
@@ -154,6 +177,6 @@ input[type='radio'] {
 
 #footer {
     text-align: center;
-    font-size: 30px;
+    font-size: 15px;
 }
 
