@@ -58,6 +58,8 @@ class Member(ndb.Model):
 
 	@classmethod
 	def from_user(cls, user):
+		if user == None: return None
+
 		member = Member.query(ancestor=chapter_key()).filter(Member.user==user).get()
 		
 		# if they don't exist yet, create
@@ -238,9 +240,6 @@ class OneoffRequestHandler(MyWebHandler):
 class MainHandler(MyWebHandler):
 
 	def get(self):
-		user = users.get_current_user()
-		member = Member.from_user(user)
-
 		date = datetime.date.today()
 		weekday = date.weekday()
 
