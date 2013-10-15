@@ -236,6 +236,15 @@ class OneoffRequestHandler(MyWebHandler):
 
 		self.redirect("/me")
 
+class ContactHandler(MyWebHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('contact.html')
+		self.response.write(template.render())
+
+class MenuHandler(MyWebHandler):
+	def get(self):
+		template = JINJA_ENVIRONMENT.get_template('menu.html')
+		self.response.write(template.render())
 
 class MainHandler(MyWebHandler):
 
@@ -266,5 +275,7 @@ app = webapp2.WSGIApplication([
 	('/me', MyPlatesHandler),
 	('/schedule', ScheduleHandler),
 	('/request', OneoffRequestHandler),
-	('/member', MemberHandler)
+	('/member', MemberHandler),
+	('/contact', ContactHandler),
+	('/menu', MenuHandler)
 ], debug=True)

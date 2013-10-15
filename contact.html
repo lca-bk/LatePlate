@@ -9,22 +9,12 @@
 	<body>
 		{% include 'header.html' %}
 
-		<h1>Today's Late Plates</h1>
-		<h3> {{ date.strftime('%A %m/%d') }} </h3>
-
+		<h1>Contact Information</h1>
 		
-		{% for meal in plates %}
-			<h2>{{meal}}</h2>
-
-			<table>
-			{% for plate in plates[meal] %}
-				<tr>
-					<td>{{ plate.member.get().name }}</td>
-				</tr>
-			{% endfor %}
-			</table>
-
-		{% endfor %}
+		<p>
+			To request additional features or report bugs contact <a class="contact" href="mailto:bstrong1218@gmail.com?Subject=Late%20Plate%20App" target="_top"> Brandon Armstrong </a> 
+			<!-- there's probably a better way to do this... define contact info externally -->
+		</p>
 
 		{% include 'footer.html' %}
 

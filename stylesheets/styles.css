@@ -113,7 +113,7 @@ body {
 	/*
     background-color: #27ae60;
     background-color: #318F32 */
-    background-image: url('../images/wood.jpg');
+    /*background-image: url('../images/wood.jpg');*/
     text-align: center;
 }
 
@@ -154,6 +154,10 @@ a {
 	font-weight: 400; 
 }
 
+a.contact{
+    text-decoration: underline;
+    color: rgb(0, 0, 20);
+}
 /*---------------------------------------------------------------*/
 
 
@@ -173,10 +177,40 @@ input[type='radio'] {
 }
 
 
+/* -------MENU EMBED STYLES -----*/
+
+#menu {
+    width: 1050px;
+    height: 820px;
+    margin: 2em auto;
+    border: 8px solid #eee;
+}
+
+#menu p {
+   padding: 1em;
+}
+
+#menu object {
+   display: block;
+   border: solid 1px #666;
+}
+
+
 /* ------FOOTER STYLES-------*/
 
 #footer {
     text-align: center;
     font-size: 15px;
 }
+
+#footer a {
+    text-decoration: none;
+    color: black;
+}
+
+a:active #footer {
+    text-decoration: underline;
+}
+
+
 

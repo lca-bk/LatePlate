@@ -9,10 +9,8 @@
 	<body>
 		{% include 'header.html' %}
 
-		</br>
-
-		<h1>{{member.name}}'s late plates:</h1>
-
+		<h1>My Late Plates</h1>
+		<h3> Signed in as: {{member.name}}</h3>
 
 		<form action='/member' method="post">
 			<h2>Name</h2>
@@ -96,9 +94,6 @@
 				<input hidden=true name="type" value="recurring" />
 			</form>
 		</div>
-
-
-		<div class="hr"></div>
 
 
 		{% include 'footer.html' %}
