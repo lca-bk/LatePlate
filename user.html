@@ -56,11 +56,10 @@
 				</select>
 
 				</br>
-
-				<input type="radio" name="meal" value="Lunch">Lunch</input>
-				<br/>
-				<input type="radio" name="meal" value="Dinner">Dinner</input>
-
+				{% for meal in meals %}
+					<input type="radio" name="meal" value="{{meal}}">{{meal}}</input>
+					<br/>
+				{% endfor %}
 				</br>
 
 				<input type="submit" value="Request" />
