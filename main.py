@@ -160,7 +160,7 @@ class ScheduleHandler(MyWebHandler):
 		member = require_member(self)
 
 		#	trash all the old recurring plates
-		prev_recurr = RecurringLatePlate.query(ancestor=chapter_key())#chapter_key()).filter(LatePlate.member == member)
+		prev_recurr = RecurringLatePlate.query(ancestor=member.key)
 		for old_plate in prev_recurr:
 			old_plate.key.delete()
 
