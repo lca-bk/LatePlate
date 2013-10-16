@@ -259,9 +259,14 @@ class MainHandler(MyWebHandler):
 		oneoff_plates_query = OneoffLatePlate.query(ancestor=chapter_key())
 
 		for meal in LatePlate.Meals:
-			oneoffs = oneoff_plates_query.filter(LatePlate.meal==meal)
-			recurrings = recurring_plates_query.filter(LatePlate.meal==meal)
-			plates[meal] = [l for l in oneoffs] + [l for l in recurrings]
+			oneoff_query = oneoff_plates_query.filter(LatePlate.meal==meal)
+			oneoffs = [p for p in oneoff_query]
+			oneoffMembers = [p.member for p in oneoffs]
+
+			recurring_query = recurring_plates_query.filter(LatePlate.meal==meal)
+			recurrings = [p for p in recurring_query if p.member not in oneoffMembers]	# remove duplicates
+
+			plates[meal] = oneoffs + recurrings
 
 		template_values = {
 			'plates': plates,
