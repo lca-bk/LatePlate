@@ -36,7 +36,7 @@ def chapter_key():
 
 
 class LatePlate(ndb.Model):
-	Meals = ["Dinner"]
+	Meals = ["Lunch", "Dinner"]
 	Weekdays = range(5)
 	WeekdayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
