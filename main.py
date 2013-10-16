@@ -146,6 +146,7 @@ class MyPlatesHandler(MyWebHandler):
 			'meals': LatePlate.Meals,
 			'recurring_plates': self.member_schedule(member),
 			'oneoff_listing': self.member_oneoff_listing(member),
+			'logout_url': users.create_logout_url(''),
 			'member': member
 		}
 		template = JINJA_ENVIRONMENT.get_template('user.html')

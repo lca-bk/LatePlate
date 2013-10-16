@@ -10,7 +10,14 @@
 		{% include 'header.html' %}
 
 		<h1>My Late Plates</h1>
-		<h3> Signed in as: {{member.name}}</h3>
+		
+		<h3>
+			Google Account: {{member.user.nickname()}}
+			<form id="logout-form" action={{logout_url}}>
+				<input type='submit' value='Logout'>
+			</form>
+		</h3>
+		
 
 		<form action='/member' method="post">
 			<h2>Name</h2>
