@@ -256,7 +256,7 @@ class MainHandler(MyWebHandler):
 		plates = {}
 
 		recurring_plates_query = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday)
-		oneoff_plates_query = OneoffLatePlate.query(ancestor=chapter_key())
+		oneoff_plates_query = OneoffLatePlate.query(ancestor=chapter_key()).filter(OneoffLatePlate.date==date)
 
 		for meal in LatePlate.Meals:
 			oneoff_query = oneoff_plates_query.filter(LatePlate.meal==meal)
