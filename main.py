@@ -122,7 +122,7 @@ class MyPlatesHandler(MyWebHandler):
 
 	# list of all of a member's oneoff plates
 	def member_oneoff_listing(self, member):
-		plates = OneoffLatePlate.query(ancestor=chapter_key()).filter(LatePlate.member==member.key)	#FIXME: only show non-expired late plates
+		plates = OneoffLatePlate.query(ancestor=chapter_key()).filter(LatePlate.member==member.key, OneoffLatePlate.date >= datetime.date.today())
 		return plates
 
 
