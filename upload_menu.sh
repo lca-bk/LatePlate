@@ -14,4 +14,5 @@ fi
 #	login kappasig
 #	password ********
 #
-curl -n --upload-file "$1" -a ftp://gtkappasig.com/www/resources/menu.pdf
+curl -n --upload-file "$1" ftp://gtkappasig.com/www/resources/menu.pdf
+
