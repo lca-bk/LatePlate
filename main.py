@@ -43,10 +43,6 @@ class LatePlate(ndb.Model):
 	member = ndb.KeyProperty()
 	meal = ndb.StringProperty()	#	"Lunch" or "Linner"
 
-
-class RecurringLatePlate(LatePlate):
-	weekday = ndb.IntegerProperty()	#	0 = Monday, 6 = Sunday, etc
-
 class OneoffLatePlate(LatePlate):
 	date = ndb.DateProperty()
 
@@ -108,17 +104,6 @@ class MemberHandler(MyWebHandler):
 
 
 class MyPlatesHandler(MyWebHandler):
-	# all of the user's recurring plates
-	def member_schedule(self, member):
-		schedule = {}
-		for meal in LatePlate.Meals:
-			schedule[meal] = []
-			for weekday in range(5):
-				plate = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday, LatePlate.member==member.key, LatePlate.meal==meal)
-				schedule[meal].append(plate.count() > 0)
-
-		return schedule
-
 
 	# list of all of a member's oneoff plates
 	def member_oneoff_listing(self, member):
@@ -138,54 +123,16 @@ class MyPlatesHandler(MyWebHandler):
 				available_oneoff_days.append(day)
 			day += datetime.timedelta(days=1)
 
-		sys.stderr.write(str(self.member_schedule(member)))
-
 		template_values = {
 			'available_oneoff_days': available_oneoff_days,
 			'available_days': LatePlate.WeekdayNames,
 			'meals': LatePlate.Meals,
-			'recurring_plates': self.member_schedule(member),
 			'oneoff_listing': self.member_oneoff_listing(member),
 			'logout_url': users.create_logout_url(''),
 			'member': member
 		}
 		template = JINJA_ENVIRONMENT.get_template('user.html')
 		self.response.write(template.render(template_values))
-
-
-class ScheduleHandler(MyWebHandler):
-
-	def post(self):
-		#	Require login
-		member = require_member(self)
-
-		#	trash all the old recurring plates
-		prev_recurr = RecurringLatePlate.query(ancestor=member.key)
-		for old_plate in prev_recurr:
-			old_plate.key.delete()
-
-		#	Add all the new scheduled plates
-		try:
-			for meal in LatePlate.Meals:
-				for weekday in LatePlate.Weekdays:
-					argKey = meal + "[" + str(weekday) + "]"
-					if argKey in self.request.POST:
-						val = self.request.POST[argKey] == "on"
-
-						if val == True:
-							p = RecurringLatePlate(
-									parent=member.key,
-									member=member.key,
-								 	meal=meal,
-								 	weekday=weekday)
-							p.put()
-							# sys.stderr.write("Scheduled " + meal + LatePlate.WeekdayNames[weekday] + "\n")
-
-		except:
-			self.error(500)
-			return
-
-		self.redirect("/me")
 
 
 class OneoffRequestHandler(MyWebHandler):
@@ -255,7 +202,6 @@ class MainHandler(MyWebHandler):
 
 		plates = {}
 
-		recurring_plates_query = RecurringLatePlate.query(ancestor=chapter_key()).filter(RecurringLatePlate.weekday==weekday)
 		oneoff_plates_query = OneoffLatePlate.query(ancestor=chapter_key()).filter(OneoffLatePlate.date==date)
 
 		for meal in LatePlate.Meals:
@@ -263,10 +209,7 @@ class MainHandler(MyWebHandler):
 			oneoffs = [p for p in oneoff_query]
 			oneoffMembers = [p.member for p in oneoffs]
 
-			recurring_query = recurring_plates_query.filter(LatePlate.meal==meal)
-			recurrings = [p for p in recurring_query if p.member not in oneoffMembers]	# remove duplicates
-
-			plates[meal] = oneoffs + recurrings
+			plates[meal] = oneoffs
 
 		template_values = {
 			'plates': plates,
@@ -279,7 +222,6 @@ class MainHandler(MyWebHandler):
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/me', MyPlatesHandler),
-	('/schedule', ScheduleHandler),
 	('/request', OneoffRequestHandler),
 	('/member', MemberHandler),
 	('/contact', ContactHandler),

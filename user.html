@@ -74,35 +74,6 @@
 		</div>
 
 
-		<div id="recurring">
-			<form action="/schedule" method="post">
-				<h2>Recurring</h2>
-
-				<table>
-
-				<tr></tr>
-				<th></th>
-				{% for day in available_days %}
-					<th>{{ day }}</th>
-				{% endfor %}
-
-				{% for meal in meals %}
-					<tr>
-					<td>{{ meal }}</td>
-
-					{% for day in range(5) %}
-							<td><input type="checkbox" name="{{ meal + "[" ~ day ~ "]" }}" {{ "checked" if recurring_plates[meal][day] }}></td>
-					{% endfor %}
-					</tr>
-				{% endfor %}
-				</table>
-
-				<input type="submit" value="Save" />
-				<input hidden=true name="type" value="recurring" />
-			</form>
-		</div>
-
-
 		{% include 'footer.html' %}
 	</body>
 </html>
