@@ -26,6 +26,21 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 
 
+
+class EST(datetime.tzinfo):
+	"""EST"""
+
+	def tzname(self, dt):
+		return "EST"
+
+	def utcoffset(self, dt):
+		return datetime.timedelta(hours=-5)
+
+	def dst(self, dt):
+		return datetime.timedelta(0)
+
+
+
 JINJA_ENVIRONMENT = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
 	extensions=['jinja2.ext.autoescape'])
@@ -197,7 +212,8 @@ class MenuHandler(MyWebHandler):
 class MainHandler(MyWebHandler):
 
 	def get(self):
-		date = datetime.date.today()
+		now = datetime.datetime.now(tz = EST())
+		date = datetime.date(now.year, now.month, now.day)
 		weekday = date.weekday()
 
 		plates = {}
