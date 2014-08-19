@@ -3,7 +3,7 @@
 
 Our house has a meal plan that includes lunch and dinner throughout the week.
 Often, some of our members can't make it during the scheduled meal time, so they sign up to have their food boxed up and saved for later.
-This app makes it incredibly easy to sign up for and cancel these Late Plates and presents a list for the chef to see the updated list.
+This app makes it incredibly easy to sign up for and cancel these Late Plates and presents a page for the chef to see the updated list.
 
 
 ## Setup
