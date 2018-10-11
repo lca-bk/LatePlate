@@ -17,19 +17,6 @@ This is a python webapp2 app that runs on  [Google App Engine](https://developer
 1. Push to app engine to deploy the application.  `git push appengine master`
 
 
-## Weekly Menu
-
-One of the tabs on the webapp displays a pdf of the weekly menu.
-This must be manually uploaded each week to stay up to date.
-A script is included to make the upload easier.
-Keep in mind that you'll have to change the upload url in the script and in menu.html depending on where you want the menu to go.
-
-```
-./upload_menu.sh menu-week1.pdf
-######################################################################## 100.0%
-```
-
-
 ## Support
 
 If you notice an issue, feel free to open a new ticket on our [GitHub Issues page](https://github.com/panzarino/LatePlate/issues).
