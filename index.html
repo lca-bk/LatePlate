@@ -4,8 +4,10 @@
 		<link rel="stylesheet" type="text/css" href="stylesheets/styles.css">
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,800&subset=latin,greek' rel='stylesheet' type='text/css'>
 		<meta http-equiv="refresh" content="180" >
+		<title>Lambda Chi Alpha Late Plates</title>
+		<link rel="shortcut icon" href="img/icon.png">
 	</head>
-	
+
 
 	<body>
 		{% include 'header.html' %}
@@ -13,7 +15,7 @@
 		<h1>Today's Late Plates</h1>
 		<h3> {{ date.strftime('%A %m/%d') }} </h3>
 
-		
+
 		{% for meal in plates %}
 			<h2>{{meal}}</h2>
 
