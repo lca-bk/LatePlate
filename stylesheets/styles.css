@@ -1,13 +1,13 @@
-* { 
+* {
 /* linter says this is slow, but research says that's an old myth
 check back if speed is an issue */
 	font-family: 'Open Sans', sans-serif;
 }
 
 .hr{
-    width: 50%; 
-    height: 1px; 
-    background: gray; 
+    width: 50%;
+    height: 1px;
+    background: gray;
     overflow: hidden;
     margin-left: auto;
     margin-right: auto;
@@ -42,11 +42,11 @@ nav a {
     margin: 0 3px;
     padding: 15px;
     text-decoration: none;  //  removes the underline
-    border: 1px solid #831608;
-    font: bold 14px Arial, Helvetica;   
-    background-color: #e74c3c;
+    border: 1px solid #52237f;
+    font: bold 14px Arial, Helvetica;
+    background-color: #016a3a;
     /*background-image: -moz-linear-gradient(#bb413b, #831608);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#bb413b), to(#831608));    
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#bb413b), to(#831608));
     background-image: -webkit-linear-gradient(#bb413b, #831608);
     background-image: -o-linear-gradient(#bb413b, #831608);
     background-image: -ms-linear-gradient(#bb413b, #831608);
@@ -62,9 +62,9 @@ nav a {
 
 nav a:hover {
     /*background-color: #c0392b;*/
-    background-color: #8F313A;
+    background-color: #52237f;
    /* background-image: -moz-linear-gradient(#831608, #bb413b);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#831608), to(#bb413b));      
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#831608), to(#bb413b));
     background-image: -webkit-linear-gradient(#831608, #bb413b);
     background-image: -o-linear-gradient(#831608, #bb413b);
     background-image: -ms-linear-gradient(#831608, #bb413b);
@@ -72,23 +72,23 @@ nav a:hover {
 }
 
 nav a:active {
-    background: #d4463c;
+    background: #52237f;
     position: relative;
-    top: 2px;    
+    top: 2px;
     -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
     -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset; 
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.7) inset;
 }
 
-/*sytle the span element bb413b 
+/*sytle the span element bb413b
 nav span {
-    border: 1px dashed #eba1a3; 
+    border: 1px dashed #eba1a3;
     display: inline-block;
     padding: 4px 15px;
-    cursor: pointer;    
+    cursor: pointer;
     background-color: #bb413b;
     background-image: -moz-linear-gradient(#d4463c, #aa2618);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#d4463c), to(#aa2618));      
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#d4463c), to(#aa2618));
     background-image: -webkit-linear-gradient(#d4463c, #aa2618);
     background-image: -o-linear-gradient(#d4463c, #aa2618);
     background-image: -ms-linear-gradient(#d4463c, #aa2618);
@@ -98,7 +98,7 @@ nav span {
 /*nav a:hover span {
     background-color: #bb413b;
     background-image: -moz-linear-gradient(#aa2618, #d4463c);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#aa2618), to(#d4463c));      
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#aa2618), to(#d4463c));
     background-image: -webkit-linear-gradient(#aa2618, #d4463c);
     background-image: -o-linear-gradient(#aa2618, #d4463c);
     background-image: -ms-linear-gradient(#aa2618, #d4463c);
@@ -116,16 +116,16 @@ body {
     text-align: center;
 }
 
-h1 { 
-	font-weight: 400; 
+h1 {
+	font-weight: 400;
 }
 
-h2 { 
-	font-weight: 600; 
+h2 {
+	font-weight: 600;
 }
 
-h3 { 
-	font-weight: 300; 
+h3 {
+	font-weight: 300;
 }
 
 p {
@@ -139,18 +139,18 @@ table {
 }
 
 td {
-	font-weight: 300; 
+	font-weight: 300;
 	text-align: center;
 }
 
 th {
-	font-weight: 400; 
+	font-weight: 400;
 	text-align: center;
 	padding: 5;
 }
 
-a { 
-	font-weight: 400; 
+a {
+	font-weight: 400;
 }
 
 a.contact{
@@ -205,6 +205,3 @@ input[type='radio'] {
 a:active #footer {
     text-decoration: underline;
 }
-
-
-
