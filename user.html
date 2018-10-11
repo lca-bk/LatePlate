@@ -10,14 +10,14 @@
 		{% include 'header.html' %}
 
 		<h1>My Late Plates</h1>
-		
+
 		<h3>
 			Google Account: {{member.user.nickname()}}
 			<form id="logout-form" action={{logout_url}}>
 				<input type='submit' value='Logout'>
 			</form>
 		</h3>
-		
+
 
 		<form action='/member' method="post">
 			<h2>Name</h2>
@@ -70,6 +70,29 @@
 				<input type="submit" value="Request" />
 				<input hidden=true name="type" value="oneoff" />
 				<input type="hidden" name="action" value="create" />
+			</form>
+		</div>
+
+		<div id="recurring">
+			<form action="/schedule" method="post">
+				<h2>Recurring</h2>
+ 				<table>
+ 				<tr></tr>
+				<th></th>
+				{% for day in available_days %}
+					<th>{{ day }}</th>
+				{% endfor %}
+ 				{% for meal in meals %}
+					<tr>
+					<td>{{ meal }}</td>
+ 					{% for day in range(5) %}
+							<td><input type="checkbox" name="{{ meal + "[" ~ day ~ "]" }}" {{ "checked" if recurring_plates[meal][day] }}></td>
+					{% endfor %}
+					</tr>
+				{% endfor %}
+				</table>
+ 				<input type="submit" value="Save" />
+				<input hidden=true name="type" value="recurring" />
 			</form>
 		</div>
 
