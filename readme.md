@@ -11,7 +11,7 @@ This app makes it incredibly easy to sign up for and cancel these Late Plates an
 This is a python webapp2 app that runs on  [Google App Engine](https://developers.google.com/appengine/).
 
 1. Create an account for Google App Engine
-1. Clone this GitHub repository: `git clone git://github.com/panzarino/LatePlate'`
+1. Clone this GitHub repository: `git clone git://github.com/lca-bk/LatePlate`
 1. Configure for your organization.  TODO: explain what needs to be changed
 1. Add google app engine as a git remote: `git remote add appengine https://code.google.com/id/###########`.  The url for this can be found in the admin console when you login to app engine.
 1. Push to app engine to deploy the application.  `git push appengine master`
